@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "pysocks5server"
+version = "0.1.0"
+description = "Simple socks5 proxy server"
+authors = ["RuslanUC <dev_ruslan_uc@protonmail.com>"]
+readme = "README.md"
+license = "MIT"
+classifiers = [
+    "Environment :: Console",
+    "Framework :: AsyncIO",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Typing :: Typed",
+    "Topic :: Internet",
+]
+packages = [
+    { include = "socks5server" }
+]
+
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
