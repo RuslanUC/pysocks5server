@@ -4,7 +4,8 @@ from abc import ABC, abstractmethod
 
 class AuthenticationBase(ABC):
     @abstractmethod
-    async def authenticate(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter) -> bool: ...
+    async def authenticate(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter) -> bool:
+        ...
 
 
 class NoAuthentication(AuthenticationBase):
@@ -18,9 +19,9 @@ class PasswordAuthentication(AuthenticationBase):
 
     async def authenticate(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter) -> bool:
         await reader.read(1)
-        login_len = (await reader.read(1))[0]
+        login_len, = await reader.read(1)
         login = (await reader.read(login_len)).decode("utf8")
-        passw_len = (await reader.read(1))[0]
+        passw_len, = await reader.read(1)
         passw = (await reader.read(passw_len)).decode("utf8")
 
         if login not in self._users or self._users[login] != passw:

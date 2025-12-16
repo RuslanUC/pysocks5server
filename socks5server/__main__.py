@@ -2,6 +2,7 @@ from argparse import ArgumentParser, Namespace
 from asyncio import get_event_loop
 
 from socks5server import SocksServer, PasswordAuthentication, Socks5Client
+from socks5server.enums import AuthMethod
 
 parser = ArgumentParser()
 parser.add_argument("--host", type=str, default="0.0.0.0", required=False)
@@ -25,7 +26,7 @@ server = SocksServer(args.host, args.port, args.no_auth)
 if args.users:
     users = {login: password for user in args.users for login, password in [user.split(":")]}
     auth = PasswordAuthentication(users)
-    server.register_authentication(0x02, auth)
+    server.register_authentication(AuthMethod.PASSWORD, auth)
     print("Registered users: " + ", ".join(users.keys()))
 
 
@@ -39,6 +40,6 @@ async def on_client_disconnected(client: Socks5Client):
     print(f"Client disconnected: {client}!")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print("Server running")
     get_event_loop().run_until_complete(server.serve())
