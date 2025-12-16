@@ -57,7 +57,7 @@ class ClientDstRelay:
     async def _dst_to_client(self) -> None:
         while data := await self._dst_reader.read(1024 * 32):
             self._callback(DataDirection.DST_TO_CLIENT, data)
-            data = await self._exec_modify_callbacks(DataDirection.CLIENT_TO_DST, data)
+            data = await self._exec_modify_callbacks(DataDirection.DST_TO_CLIENT, data)
             if data is None:
                 continue
             self._cl_writer.write(data)

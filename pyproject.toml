@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pysocks5server"
-version = "0.1.1"
+version = "0.1.2"
 description = "Simple socks5 proxy server"
 authors = ["RuslanUC <dev_ruslan_uc@protonmail.com>"]
 readme = "README.md"
