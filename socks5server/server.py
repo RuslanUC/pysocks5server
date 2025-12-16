@@ -88,3 +88,7 @@ class SocksServer:
     def on_data_modify(self, func: DataCallbackType):
         self.register_handler(ClientEventType.DATA_MODIFY, func)
         return func
+
+    def on_dest_connected(self, func: ClientConnectedType):
+        self.register_handler(ClientEventType.CONNECT, func)
+        return func

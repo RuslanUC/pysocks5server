@@ -36,6 +36,9 @@ class Socks5Client:
         self._writer = writer
         self._server = server
 
+        self._dst_writer: asyncio.StreamWriter | None = None
+        self._dst_server: asyncio.StreamReader | None = None
+
         self._bind_server = None
 
     def __repr__(self) -> str:
@@ -107,9 +110,9 @@ class Socks5Client:
         raise RuntimeError("Unreachable")
 
     async def _handle_connection(self, address: str, port: int) -> None:
-        dst_reader, dst_writer = await asyncio.open_connection(address, port)
+        self._dst_reader, self._dst_writer = await asyncio.open_connection(address, port)
 
-        _, port = dst_writer.get_extra_info("sockname")
+        _, port = self._dst_writer.get_extra_info("sockname")
         self._writer.write(CommandReply(
             status=ReplyStatus.SUCCESS,
             address_type=AddressType.IPV4,
@@ -118,10 +121,13 @@ class Socks5Client:
         ).write())
         await self._writer.drain()
 
+        for callback in self._server.event_handlers.get(ClientEventType.DEST_CONNECT, []):
+            asyncio.create_task(callback(self))
+
         await ClientDstRelay(
             self,
-            dst_reader,
-            dst_writer,
+            self._dst_reader,
+            self._dst_writer,
             self._server.event_handlers.get(ClientEventType.DATA, []),
             self._server.event_handlers.get(ClientEventType.DATA_MODIFY, []),
         ).run()
@@ -170,3 +176,11 @@ class Socks5Client:
 
     def get_rw(self) -> tuple[asyncio.StreamReader, asyncio.StreamWriter]:
         return self._reader, self._writer
+
+    async def write_client(self, data: bytes) -> None:
+        self._writer.write(data)
+        await self._writer.drain()
+
+    async def write_dst(self, data: bytes) -> None:
+        self._dst_writer.write(data)
+        await self._dst_writer.drain()

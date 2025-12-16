@@ -1,5 +1,5 @@
 from argparse import ArgumentParser, Namespace
-from asyncio import get_event_loop
+from asyncio import new_event_loop
 
 from socks5server import SocksServer, PasswordAuthentication, Socks5Client
 from socks5server.enums import AuthMethod
@@ -35,6 +35,11 @@ async def on_client_connected(client: Socks5Client):
     print(f"Client connected: {client}!")
 
 
+@server.on_dest_connected
+async def on_dest_connected(client: Socks5Client):
+    print(f"We connected to destination (for client {client})!")
+
+
 @server.on_client_disconnected
 async def on_client_disconnected(client: Socks5Client):
     print(f"Client disconnected: {client}!")
@@ -42,4 +47,4 @@ async def on_client_disconnected(client: Socks5Client):
 
 if __name__ == "__main__":
     print("Server running")
-    get_event_loop().run_until_complete(server.serve())
+    new_event_loop().run_until_complete(server.serve())

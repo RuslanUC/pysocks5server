@@ -37,6 +37,7 @@ class ClientEventType(Enum):
     DISCONNECT = auto()
     DATA = auto()
     DATA_MODIFY = auto()
+    DEST_CONNECT = auto()
 
 
 class DataModify(Enum):
